@@ -1,10 +1,32 @@
-# compute node block stat analysis
+# block stat analysis
 
+import time
+import sched
 import libvirt
+import datetime
+import logging
+import logging.handlers
 from xml.etree import ElementTree
 
+scheduler = sched.scheduler(time.time, time.sleep)
 node_stats_rbytes = 0
 node_stats_wbytes = 0
+
+
+def __block_stats_getLogger(lib):
+    LOG_FILENAME = '/var/log/blockstats.log'
+    logger = logging.getLogger(lib)
+    logger.setLevel(logging.DEBUG)
+    handler = logging.handlers.RotatingFileHandler(
+        LOG_FILENAME,
+        maxBytes=104857600,
+        backupCount=5)
+    formatter = logging.Formatter("%(asctime)s: %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
+blockstats_logger = __block_stats_getLogger('block_stats')
+
 
 #Function to return a list of block devices used.
 def get_target_devices(dom):
@@ -26,10 +48,14 @@ def get_target_devices(dom):
    #Completed device name list.
    return devices
 
-if __name__=="__main__":
+def collect_blockstats():
+#if __name__=="__main__":
    #Connect to some hypervisor.
    conn=libvirt.open("qemu:///system")
 
+
+   node_stats_rbytes = 0
+   node_stats_wbytes = 0
    #Iterate through all available domains.
    for id in conn.listDomainsID():
        #Initialize the domain object.
@@ -55,11 +81,12 @@ if __name__=="__main__":
        #display the results for this domain.
        node_stats_rbytes += rbytes
        node_stats_wbytes += wbytes
-       print "\n%s Block Stats"%(dom.UUIDString())
-       print "Read Requests:  %s"%(rreq)
-       print "Read Bytes:     %s"%(rbytes)
-       print "Write Requests: %s"%(wreq)
-       print "Written Bytes:  %s"%(wbytes)
 
-   print "\nTotal Read Bytes:     %s"%(node_stats_rbytes)
-   print "Total Written Bytes:  %s"%(node_stats_wbytes)
+   blockstats_logger.info("Total Read Bytes:     %s" % (node_stats_rbytes))
+   blockstats_logger.info("Total Written Bytes:  %s\n" % (node_stats_wbytes))
+
+
+if __name__=="__main__":
+   while True:
+       scheduler.enter(3600, 1, collect_blockstats, ())
+       scheduler.run()

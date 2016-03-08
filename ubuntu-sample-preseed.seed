@@ -18,12 +18,9 @@ d-i partman/early_command string \
     if [ -d /sys/firmware/efi ]; then                           \
         debconf-set partman-auto/expert_recipe                  \
             "boot-root ::                                       \
-                1 1 1 free                                      \
-                    method{ biosgrub }                          \
-                .                                               \
-                512 512 1024 fat32                              \
-                    $primary{ } $bootable{ }                    \
-                    method { efi }                              \
+                538 538 1075 free                               \
+                    $primary{ }                                 \
+                    method{ efi } format{ }                     \
                 .                                               \
                 3000 10000 100000 ext4                          \
                     $primary{ }                                 \
@@ -40,12 +37,8 @@ d-i partman/early_command string \
     else \
         debconf-set partman-auto/expert_recipe                  \
             "boot-root ::                                       \
-                1 1 1 free                                      \
+                8 8 8 free                                      \
                     method{ biosgrub }                          \
-                .                                               \
-                128 100 256 fat32                               \
-                    $primary{ } $bootable{ }                    \
-                    method {efi}                                \
                 .                                               \
                 3000 10000 100000 ext4                          \
                     $primary{ }                                 \

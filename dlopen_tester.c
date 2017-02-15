@@ -1,3 +1,6 @@
+/*
+ * build info: gcc -o dlopen_tester dlopen_tester.c -ldl
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <dlfcn.h>

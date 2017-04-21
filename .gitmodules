@@ -1,3 +1,6 @@
 [submodule "perf-tools"]
 	path = perf-tools
 	url = git@github.com:Vicente-Cheng/perf-tools.git
+[submodule "dotvimrc"]
+	path = dotvimrc
+	url = git@github.com:Vicente-Cheng/dotvimrc.git

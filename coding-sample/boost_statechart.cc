@@ -8,8 +8,6 @@
 #include <boost/mpl/list.hpp>
 #include <boost/statechart/transition.hpp>
 
-#include <unistd.h>
-
 namespace sc = boost::statechart;
 namespace mpl = boost::mpl;
 
@@ -30,6 +28,8 @@ struct Stage_1 : sc::state_machine< Stage_1, Initial > {};
 
 struct HowAreYou;
 struct ToLeave;
+struct WaitResponse;
+struct SayHello;
 
 struct SayGoodBye;
 struct SayGoodBye : sc::event< SayGoodBye > {
@@ -38,7 +38,6 @@ struct SayGoodBye : sc::event< SayGoodBye > {
         }
 };
 
-struct SayHello;
 struct SayHello : sc::event< SayHello > {
         SayHello() : sc::event< SayHello >() {
                 std::cout << "Hello World!" << std::endl;
@@ -67,19 +66,30 @@ struct Initial : sc::state< Initial, Stage_1 , HowAreYou>
 	 */
 };
 
-void Initial::exit() {}
+void Initial::exit() {};
 
-  struct HowAreYou : sc::state< HowAreYou, Initial >
+  struct HowAreYou : sc::state< HowAreYou, Initial, WaitResponse>
   {
   	HowAreYou(my_context ctx) : my_base(ctx) {
 		std::cout << "How Are You?" << std::endl;
-		post_event( SayHello() );
 	}
-
-	typedef sc::transition< SayHello, ToLeave > reactions;
+	void exit();
   };
 
-  struct ToLeave : sc::state< ToLeave, Initial >
+  struct WaitResponse : sc::state< WaitResponse, HowAreYou >
+  {
+	  WaitResponse(my_context ctx): my_base(ctx) {
+		  std::cout << "Waiting response..." << std::endl;
+		  post_event( SayHello() );
+	  }
+	  typedef sc::transition< SayHello, ToLeave > reactions;
+  };
+
+  void HowAreYou::exit() {
+	  std::cout << "exit HowAreYou!" << std::endl;
+  }
+
+  struct ToLeave : sc::state< ToLeave, HowAreYou >
   {
   	ToLeave(my_context ctx) : my_base(ctx) {
 		std::cout << "Prepare to Leave..." << std::endl;

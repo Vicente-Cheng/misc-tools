@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 
-using t1 = uint64_t;
-using t2 = int64_t;
+using t1 = uid_t;
+using t2 = gid_t;
 
 template<typename T>
 std::string foo(T)

@@ -5,6 +5,11 @@ package main
  * use `Value` instead `DefaultText` for
  * default value.
  *
+ * `DefaultText` is really for Text.
+ *
+ * If `DefaultText` is nil, it will take
+ * `Value` for it
+ *
  */
 
 import (
@@ -27,12 +32,13 @@ func main() {
 			Name:        "defaultvalue",
 			Usage:       "Value for default",
 			Value:       5,
+			DefaultText: "7", // really for text.
 			Destination: &defaultValue,
 		},
 		&cli.UintFlag{
 			Name:        "defaultvaluetext",
 			Usage:       "DefaultText for default",
-			DefaultText: "5",
+			DefaultText: "6",
 			Destination: &defaultValueText,
 		},
 	}

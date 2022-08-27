@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash
 # The script creates a QEMU image and attaches it to a Vagrant (libvirt) VM.
 #
 # What the script does:
@@ -10,11 +10,17 @@
 # Usage: ./attach-disk.sh <VM name> <Target device> <disk size (GB)>
 #
 
+if [[ $# != 3 ]]
+then
+	echo "Usage: ./attach-disk.sh <VM name> <Target device> <disk size (GB)>"
+	exit 1
+fi
+
 TARGET_VM=$1
 TARGET_DEVICE=$2
 DISK_SIZE=$3
 DISK_NAME=$TARGET_VM-$TARGET_DEVICE
-DISKS_DIR=/tmp/libvirt_disks
+: ${DISKS_DIR:=/tmp/libvirt_disks}
 
 # create disk image
 mkdir -p $DISKS_DIR

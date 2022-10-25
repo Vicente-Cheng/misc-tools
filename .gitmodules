@@ -4,3 +4,6 @@
 [submodule "dotvimrc"]
 	path = dotvimrc
 	url = git@github.com:Vicente-Cheng/dotvimrc.git
+[submodule "harvester-related/terraform"]
+	path = harvester-related/terraform
+	url = https://github.com/Vicente-Cheng/terraform-examples.git
